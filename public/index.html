@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GTA House Listings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🏠 GTA House Listings</h1>
+    <div class="filters">
+      <input type="text" id="location" placeholder="Enter location (e.g. Toronto)" />
+      <select id="type">
+        <option value="">All Types</option>
+        <option value="Detached">Detached</option>
+        <option value="Semi-Detached">Semi-Detached</option>
+        <option value="Condo">Condo</option>
+        <option value="Townhouse">Townhouse</option>
+        
+      </select>
+      <button onclick="loadHouses()">Filter</button>
+    </div>
+    <ul id="houseList"></ul>
+  </div>
+
+  <script>
+    async function loadHouses() {
+      const location = document.getElementById('location').value;
+      const type = document.getElementById('type').value;
+      let url = `/api/houses?`;
+      if (location) url += `location=${location}&`;
+      if (type) url += `type=${type}`;
+
+      const res = await fetch(url); 
+      const houses = await res.json();
+
+      const list = document.getElementById('houseList');
+      list.innerHTML = '';
+      houses.forEach(h => {
+        const item = document.createElement('li');
+        item.textContent = `${h.title} - ${h.location} - $${h.price} (${h.type})`;
+        list.appendChild(item);
+      });
+    }
+
+    loadHouses();
+  </script>
+</body>
+</html>
